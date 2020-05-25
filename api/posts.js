@@ -78,13 +78,13 @@ postsRouter.use((req, res, next) => {
   next();
 });
 
-postsRouter.get("/", async (req, res) => {
-  const posts = await getAllPosts();
+// postsRouter.get("/", async (req, res) => {
+//   const posts = await getAllPosts();
 
-  res.send({
-    posts,
-  });
-});
+//   res.send({
+//     posts,
+//   });
+// });
 
 postsRouter.delete("/:postId", requireUser, async (req, res, next) => {
   try {
@@ -118,7 +118,13 @@ postsRouter.get("/", async (req, res) => {
     const allPosts = await getAllPosts();
 
     const posts = allPosts.filter((post) => {
-      return post.active || (req.user && post.author.id === req.user.id);
+      if (post.active) {
+        return true;
+      }
+      if (req.user && post.author.id === req.user.id) {
+        return true;
+      }
+      return false;
     });
 
     res.send({
